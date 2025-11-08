@@ -1,0 +1,20 @@
+
+    Mesh Normalization, Quantization & Error Analysis
+    Author: Saket Bishnu
+    Files processed: 8 meshes
+
+    Methods used:
+    - Min-Max normalization + 1024-bin quantization
+    - Unit Sphere normalization + 1024-bin quantization
+    - (Optional) Z-score normalization (if enabled)
+
+    For each mesh, the following are saved:
+    - normalized mesh (.obj)
+    - quantized integer array (.npy)
+    - visual quantized mesh (.obj)
+    - reconstructed mesh (.obj)
+    - per-axis error plot (.png)
+    - errors json (.json)
+
+    Use summary.json to build tables of MSE/MAE and include screenshots/plots in the final PDF report.
+    

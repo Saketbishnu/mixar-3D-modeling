@@ -1,47 +1,12 @@
-# Running a self-contained mesh preprocessing pipeline on uploaded sample zip
-# This code will:
-# - Unzip /mnt/data/8samples.zip (uploaded by user)
-# - Find .obj files inside
-# - For each .obj: parse vertices and faces (simple parser)
-# - Compute stats, apply Min-Max and Unit Sphere normalization
-# - Quantize (bins=1024), dequantize, denormalize, reconstruct
-# - Compute MSE and MAE per axis and total
-# - Save reconstructed .obj files and plots to /mnt/data/outputs/
-# - Print summary and list of generated files with download links
-
-import os, json
+import argparse
+import os
+import json
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-# === Saket's Local Setup ===
-# Folder where your .obj files are stored:
-WORK_DIR = Path(r"C:\Users\saket\OneDrive\Desktop\mesh_preprocessing\data\8samples")
-
-# Folder where output results will be saved:
-OUT_DIR = Path(r"C:\Users\saket\OneDrive\Desktop\mesh_preprocessing\outputs")
-
-# Number of quantization bins:
-BINS = 1024
-
-# Ensure output folder exists
-os.makedirs(OUT_DIR, exist_ok=True)
-
-
-
-os.makedirs(OUT_DIR, exist_ok=True)
-
-
-
-# 2. Find .obj files
-obj_paths = list(Path(WORK_DIR).rglob("*.obj"))
-if len(obj_paths) == 0:
-    print("No .obj files found inside the uploaded zip. Contents of the zip:")
-    for p in Path(WORK_DIR).rglob("*"):
-        print(str(p.relative_to(WORK_DIR)))
-    raise SystemExit("No .obj files to process. Please upload .obj meshes.")
-
-print(f"Found {len(obj_paths)} .obj files. Processing...")
+def ensure_dir(path):
+    Path(path).mkdir(parents=True, exist_ok=True)
 
 def parse_obj(path):
     verts = []
@@ -57,34 +22,31 @@ def parse_obj(path):
                 parts = line.strip().split()[1:]
                 face = []
                 for p in parts:
-                    # face entries can be like v, v/vt, v//vn, v/vt/vn
                     idx = p.split('/')[0]
                     try:
                         vi = int(idx)
                         if vi < 0:
-                            # negative indices refer to relative indexing
                             vi = len(verts) + 1 + vi
-                        face.append(vi-1)  # convert to 0-based
+                        face.append(vi-1)
                     except:
                         pass
                 if len(face) >= 3:
-                    # only keep triangles or first three verts
                     faces.append(face[:3])
     return np.array(verts, dtype=float), np.array(faces, dtype=int)
 
 def write_obj(path, verts, faces):
+    # verts: Nx3 floats
     with open(path, 'w') as f:
         for v in verts:
             f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
         for face in faces:
-            # write 1-based indices
             f.write("f " + " ".join(str(int(i)+1) for i in face) + "\n")
 
 def minmax_normalize(v):
     vmin = v.min(axis=0)
     vmax = v.max(axis=0)
-    denom = vmax - vmin
-    denom[denom==0] = 1.0
+    denom = (vmax - vmin)
+    denom[denom == 0] = 1.0
     norm = (v - vmin) / denom
     params = {'type':'minmax','vmin':vmin.tolist(),'vmax':vmax.tolist()}
     return norm, params
@@ -99,19 +61,38 @@ def unit_sphere_normalize(v):
     params = {'type':'unitsphere','centroid':centroid.tolist(),'scale':float(max_dist)}
     return norm, params
 
-def quantize_norm(norm, bins=BINS, norm_type='minmax'):
+def zscore_normalize(v):
+    mu = v.mean(axis=0)
+    sigma = v.std(axis=0)
+    sigma[sigma == 0] = 1.0
+    norm = (v - mu) / sigma
+    params = {'type':'zscore','mu':mu.tolist(),'sigma':sigma.tolist()}
+    return norm, params
+
+def quantize_norm(norm, bins=1024, norm_type='minmax'):
     nv = np.array(norm, dtype=float)
     if norm_type == 'unitsphere':
-        nv_shift = (nv + 1.0)/2.0  # map [-1,1] -> [0,1]
+        nv_shift = (nv + 1.0) / 2.0
+    elif norm_type == 'zscore':
+        # For z-score, map to [0,1] based on robust min/max of normalized values
+        # use min/max across data (clamp extreme outliers)
+        lo = np.percentile(nv, 1)
+        hi = np.percentile(nv, 99)
+        nv_clip = np.clip(nv, lo, hi)
+        nv_shift = (nv_clip - lo) / (hi - lo) if (hi - lo) != 0 else (nv_clip - lo)
     else:
-        nv_shift = nv  # assume in [0,1]
-    q = np.floor(nv_shift * (bins - 1)).astype(np.int32)
+        nv_shift = nv
+    q = np.floor(np.clip(nv_shift, 0.0, 1.0) * (bins - 1)).astype(np.int32)
     return q
 
-def dequantize(q, bins=BINS, norm_type='minmax'):
+def dequantize(q, bins=1024, norm_type='minmax'):
     qf = q.astype(float) / (bins - 1)
     if norm_type == 'unitsphere':
         deq = qf * 2.0 - 1.0
+    elif norm_type == 'zscore':
+        # zscore dequantization is ambiguous (we stored clipped quantization);
+        # we simply return qf in [0,1] and let denormalization step handle mapping with saved params
+        deq = qf
     else:
         deq = qf
     return deq
@@ -122,11 +103,26 @@ def denormalize(deq, params):
         vmax = np.array(params['vmax'])
         recon = deq * (vmax - vmin) + vmin
         return recon
-    else:
+    elif params['type'] == 'unitsphere':
         centroid = np.array(params['centroid'])
         scale = float(params['scale'])
         recon = deq * scale + centroid
         return recon
+    elif params['type'] == 'zscore':
+        # For zscore, deq currently in [0,1] corresponding to clipped range; reconstruct using stored mu/sigma
+        mu = np.array(params['mu'])
+        sigma = np.array(params['sigma'])
+        # Use min/max stored in params if present (we store them later). If not present, convert 0-1 -> mean via identity
+        if 'z_lo' in params and 'z_hi' in params:
+            lo = params['z_lo']
+            hi = params['z_hi']
+            z = deq * (hi - lo) + lo
+        else:
+            z = (deq - 0.5) * 2.0  # rough fallback
+        recon = z * sigma + mu
+        return recon
+    else:
+        raise RuntimeError("Unknown normalization type for denormalize")
 
 def compute_errors(orig, recon):
     diff = orig - recon
@@ -136,92 +132,160 @@ def compute_errors(orig, recon):
     mae_total = float(np.mean(np.sum(np.abs(diff), axis=1)))
     return {'mse_per_axis':mse_per_axis,'mae_per_axis':mae_per_axis,'mse_total':mse_total,'mae_total':mae_total}
 
-generated_files = []
-
-summary = {}
-for path in obj_paths:
-    name = Path(path).stem
-    verts, faces = parse_obj(path)
-    if verts.size == 0:
-        print(f"Skipping {name}: no vertices parsed.")
-        continue
-    mesh_out_dir = Path(OUT_DIR)/name
-    mesh_out_dir.mkdir(parents=True, exist_ok=True)
-    # stats
-    stats = {
-        'n_vertices': int(verts.shape[0]),
-        'min': verts.min(axis=0).tolist(),
-        'max': verts.max(axis=0).tolist(),
-        'mean': verts.mean(axis=0).tolist(),
-        'std': verts.std(axis=0).tolist()
-    }
-    with open(mesh_out_dir / f"{name}_stats.json", 'w') as f:
-        json.dump(stats, f, indent=2)
-    generated_files.append(str(mesh_out_dir / f"{name}_stats.json"))
-    summary[name] = {'stats': stats, 'results': {}}
-    # for both normalizations
-    for norm_fn,label in [(minmax_normalize,'minmax'),(unit_sphere_normalize,'unitsphere')]:
-        norm, params = norm_fn(verts)
-        # save normalized as obj
-        norm_path = mesh_out_dir / f"{name}_normalized_{label}.obj"
-        write_obj(norm_path, norm, faces)
-        generated_files.append(str(norm_path))
-        # quantize
-        q = quantize_norm(norm, bins=BINS, norm_type=label)
-        # dequantize
-        deq = dequantize(q, bins=BINS, norm_type=label)
-        # denormalize/reconstruct
-        recon = denormalize(deq, params)
-        recon_path = mesh_out_dir / f"{name}_reconstructed_{label}.obj"
-        write_obj(recon_path, recon, faces)
-        generated_files.append(str(recon_path))
-        # compute errors
-        errs = compute_errors(verts, recon)
-        with open(mesh_out_dir / f"{name}_errors_{label}.json", 'w') as f:
-            json.dump({'params':params,'errors':errs}, f, indent=2)
-        generated_files.append(str(mesh_out_dir / f"{name}_errors_{label}.json"))
-        # plot per-axis errors
-        axes = ['X','Y','Z']
-        mse = errs['mse_per_axis']
-        mae = errs['mae_per_axis']
-        fig, ax = plt.subplots(figsize=(6,4))
-        x = np.arange(len(axes))
-        width = 0.35
-        ax.bar(x - width/2, mse, width, label='MSE')
-        ax.bar(x + width/2, mae, width, label='MAE')
-        ax.set_xticks(x); ax.set_xticklabels(axes)
-        ax.set_ylabel('Error'); ax.set_title(f"Error - {name} - {label}")
-        ax.legend(); fig.tight_layout()
-        plot_path = mesh_out_dir / f"{name}_error_{label}.png"
-        fig.savefig(plot_path)
-        plt.close(fig)
-        generated_files.append(str(plot_path))
-        # update summary
-        summary[name]['results'][label] = {'params': params, 'errors': errs, 'norm_path': str(norm_path), 'recon_path': str(recon_path), 'plot': str(plot_path)}
-    # Save a small view snapshot of original vertices (scatter plot)
-    fig = plt.figure(figsize=(6,4))
-    ax = fig.add_subplot(111, projection='3d')
-    sample = verts if verts.shape[0] <= 5000 else verts[np.random.choice(verts.shape[0], 5000, replace=False)]
-    ax.scatter(sample[:,0], sample[:,1], sample[:,2], s=1)
-    ax.set_title(f"Original: {name}")
-    plt.tight_layout()
-    orig_png = mesh_out_dir / f"{name}_original_scatter.png"
-    fig.savefig(orig_png)
+def plot_error_bars(mse, mae, title, out_path):
+    axes = ['X','Y','Z']
+    x = np.arange(len(axes))
+    width = 0.35
+    fig, ax = plt.subplots(figsize=(6,4))
+    ax.bar(x - width/2, mse, width, label='MSE')
+    ax.bar(x + width/2, mae, width, label='MAE')
+    ax.set_xticks(x); ax.set_xticklabels(axes)
+    ax.set_ylabel('Error'); ax.set_title(title)
+    ax.legend(); fig.tight_layout()
+    fig.savefig(out_path)
     plt.close(fig)
-    generated_files.append(str(orig_png))
 
-# Save summary json
-summary_path = Path(OUT_DIR)/"summary.json"
-with open(summary_path, 'w') as f:
-    json.dump(summary, f, indent=2)
-generated_files.append(str(summary_path))
+def process_all(input_dir, output_dir, bins=1024, skip_visual=True, include_zscore=False):
+    input_dir = Path(input_dir)
+    output_dir = Path(output_dir)
+    ensure_dir(output_dir)
 
-print("Processing complete. Generated files:")
-for p in generated_files:
-    print(p)
+    obj_paths = list(input_dir.rglob("*.obj")) + list(input_dir.rglob("*.ply"))
+    if len(obj_paths) == 0:
+        print("No .obj/.ply files found in", input_dir)
+        return
 
-# Print download links (sandbox path)
-print("\nDownload links (click to download):")
-for p in generated_files:
-    rel = os.path.relpath(p, "/mnt/data")
-    print(f"[Download] sandbox:/mnt/data/{rel}")
+    summary = {}
+    for p in obj_paths:
+        name = p.stem
+        print(f"Processing: {name}")
+        verts, faces = parse_obj(p)
+        if verts.size == 0:
+            print(f"  - No vertices parsed, skipping {name}")
+            continue
+
+        mesh_out_dir = output_dir / name
+        ensure_dir(mesh_out_dir)
+
+        # Task 1: stats
+        stats = {'n_vertices': int(verts.shape[0]),
+                 'min': verts.min(axis=0).tolist(),
+                 'max': verts.max(axis=0).tolist(),
+                 'mean': verts.mean(axis=0).tolist(),
+                 'std': verts.std(axis=0).tolist()}
+        (mesh_out_dir / f"{name}_stats.json").write_text(json.dumps(stats, indent=2))
+        results = {}
+
+        # Normalization methods to run
+        methods = [('minmax', minmax_normalize), ('unitsphere', unit_sphere_normalize)]
+        if include_zscore:
+            methods.append(('zscore', zscore_normalize))
+
+        for label, fn in methods:
+            norm, params = fn(verts)
+
+            # If zscore we compute robust clipping bounds and store them for denorm dequantization
+            if label == 'zscore':
+                lo = float(np.percentile(norm, 1))
+                hi = float(np.percentile(norm, 99))
+                if hi - lo == 0:
+                    hi = lo + 1.0
+                params['z_lo'] = lo
+                params['z_hi'] = hi
+
+            # Save normalized mesh (for visualization): normalized coordinates might be outside typical ranges,
+            # but we still save them as floats
+            norm_path = mesh_out_dir / f"{name}_normalized_{label}.obj"
+            write_obj(norm_path, norm, faces)
+
+            # Quantize -> integer array
+            q = quantize_norm(norm, bins=bins, norm_type=label)
+            np.save(mesh_out_dir / f"{name}_quantized_int_{label}.npy", q)
+
+            # Also save a visual-friendly OBJ of quantized positions mapped to [0,1] floats
+            q_float = q.astype(float) / (bins - 1)
+            quant_obj_path = mesh_out_dir / f"{name}_quantized_vis_{label}.obj"
+            write_obj(quant_obj_path, q_float, faces)
+
+            # Dequantize & denormalize to reconstruct
+            deq = dequantize(q, bins=bins, norm_type=label)
+            recon = denormalize(deq, params)
+            recon_path = mesh_out_dir / f"{name}_reconstructed_{label}.obj"
+            write_obj(recon_path, recon, faces)
+
+            # Compute errors
+            errs = compute_errors(verts, recon)
+            (mesh_out_dir / f"{name}_errors_{label}.json").write_text(json.dumps({'params': params, 'errors': errs}, indent=2))
+
+            # Plot per-axis error
+            plot_path = mesh_out_dir / f"{name}_error_{label}.png"
+            plot_error_bars(errs['mse_per_axis'], errs['mae_per_axis'], f"Error - {name} - {label}", plot_path)
+
+            # Collect results
+            results[label] = {
+                'params': params,
+                'errors': errs,
+                'norm_path': str(norm_path),
+                'quant_int': str(mesh_out_dir / f"{name}_quantized_int_{label}.npy"),
+                'quant_vis': str(quant_obj_path),
+                'recon_path': str(recon_path),
+                'plot': str(plot_path)
+            }
+
+        # Save small scatter of original vertices for quick visual check
+        try:
+            fig = plt.figure(figsize=(6,4))
+            ax = fig.add_subplot(111, projection='3d')
+            sample = verts if verts.shape[0] <= 5000 else verts[np.random.choice(verts.shape[0], 5000, replace=False)]
+            ax.scatter(sample[:,0], sample[:,1], sample[:,2], s=1)
+            ax.set_title(f"Original: {name}")
+            orig_png = mesh_out_dir / f"{name}_original_scatter.png"
+            fig.tight_layout()
+            fig.savefig(orig_png)
+            plt.close(fig)
+        except Exception:
+            # Matplotlib 3D could fail in headless systems; ignore if so
+            pass
+
+        summary[name] = {'stats': stats, 'results': results}
+
+    # write global summary
+    summary_path = output_dir / "summary.json"
+    summary_path.write_text(json.dumps(summary, indent=2))
+
+    # Create a small report template
+    report_txt = output_dir / "report_template.txt"
+    report_template = f"""
+    Mesh Normalization, Quantization & Error Analysis
+    Author: Saket Bishnu
+    Files processed: {len(summary)} meshes
+
+    Methods used:
+    - Min-Max normalization + 1024-bin quantization
+    - Unit Sphere normalization + 1024-bin quantization
+    - (Optional) Z-score normalization (if enabled)
+
+    For each mesh, the following are saved:
+    - normalized mesh (.obj)
+    - quantized integer array (.npy)
+    - visual quantized mesh (.obj)
+    - reconstructed mesh (.obj)
+    - per-axis error plot (.png)
+    - errors json (.json)
+
+    Use summary.json to build tables of MSE/MAE and include screenshots/plots in the final PDF report.
+    """
+    report_txt.write_text(report_template)
+
+    print("Processing complete. Outputs written to:", output_dir)
+    print("Summary saved at:", summary_path)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Mesh Normalization, Quantization & Error Analysis")
+    parser.add_argument("--input_dir", type=str, required=True, help="Folder with .obj/.ply files (or nested folders)")
+    parser.add_argument("--output_dir", type=str, required=True, help="Where outputs will be placed")
+    parser.add_argument("--bins", type=int, default=1024, help="Quantization bins (e.g., 1024)")
+    parser.add_argument("--no_zscore", action="store_true", help="Disable Z-score normalization method")
+    args = parser.parse_args()
+
+    process_all(args.input_dir, args.output_dir, bins=args.bins, include_zscore=(not args.no_zscore))

@@ -52,9 +52,11 @@
           "mse_total": 2.3476821303398145e-06,
           "mae_total": 0.0022025659723994783
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_error_minmax.png"
+        "norm_path": "outputs\\branch\\branch_normalized_minmax.obj",
+        "quant_int": "outputs\\branch\\branch_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\branch\\branch_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\branch\\branch_reconstructed_minmax.obj",
+        "plot": "outputs\\branch\\branch_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -80,9 +82,47 @@
           "mse_total": 6.5550051989113926e-06,
           "mae_total": 0.003817626010498089
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\branch\\branch_error_unitsphere.png"
+        "norm_path": "outputs\\branch\\branch_normalized_unitsphere.obj",
+        "quant_int": "outputs\\branch\\branch_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\branch\\branch_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\branch\\branch_reconstructed_unitsphere.obj",
+        "plot": "outputs\\branch\\branch_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            0.06502485568065508,
+            1.0912832323439123,
+            0.11570215148413523
+          ],
+          "sigma": [
+            0.3474391293373574,
+            0.46715492836599865,
+            0.20309079782449607
+          ],
+          "z_lo": -2.345966713350851,
+          "z_hi": 1.6734571770237314
+        },
+        "errors": {
+          "mse_per_axis": [
+            0.00021572168587729847,
+            3.453680758965917e-06,
+            5.1984662335507914e-05
+          ],
+          "mae_per_axis": [
+            0.002658331526401693,
+            0.0010195617275719849,
+            0.001212765386573894
+          ],
+          "mse_total": 0.00027116002897177235,
+          "mae_total": 0.004890658640547567
+        },
+        "norm_path": "outputs\\branch\\branch_normalized_zscore.obj",
+        "quant_int": "outputs\\branch\\branch_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\branch\\branch_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\branch\\branch_reconstructed_zscore.obj",
+        "plot": "outputs\\branch\\branch_error_zscore.png"
       }
     }
   },
@@ -139,9 +179,11 @@
           "mse_total": 2.389877526310075e-06,
           "mae_total": 0.0018328445747800431
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_error_minmax.png"
+        "norm_path": "outputs\\cylinder\\cylinder_normalized_minmax.obj",
+        "quant_int": "outputs\\cylinder\\cylinder_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\cylinder\\cylinder_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\cylinder\\cylinder_reconstructed_minmax.obj",
+        "plot": "outputs\\cylinder\\cylinder_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -167,9 +209,47 @@
           "mse_total": 7.720690800229657e-06,
           "mae_total": 0.004147254490283118
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\cylinder\\cylinder_error_unitsphere.png"
+        "norm_path": "outputs\\cylinder\\cylinder_normalized_unitsphere.obj",
+        "quant_int": "outputs\\cylinder\\cylinder_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\cylinder\\cylinder_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\cylinder\\cylinder_reconstructed_unitsphere.obj",
+        "plot": "outputs\\cylinder\\cylinder_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            2.3418766925686896e-17,
+            0.0,
+            -3.469446951953614e-17
+          ],
+          "sigma": [
+            0.7071068300178377,
+            1.0,
+            0.7071068300178377
+          ],
+          "z_lo": -1.4142134647105216,
+          "z_hi": 1.4142134647105216
+        },
+        "errors": {
+          "mse_per_axis": [
+            1.194938763155035e-06,
+            2.668895239701642e-06,
+            1.194938763155069e-06
+          ],
+          "mae_per_axis": [
+            0.0009164222873900026,
+            0.0013824178540668974,
+            0.0009164222873900202
+          ],
+          "mse_total": 5.058772766011743e-06,
+          "mae_total": 0.00321526242884692
+        },
+        "norm_path": "outputs\\cylinder\\cylinder_normalized_zscore.obj",
+        "quant_int": "outputs\\cylinder\\cylinder_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\cylinder\\cylinder_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\cylinder\\cylinder_reconstructed_zscore.obj",
+        "plot": "outputs\\cylinder\\cylinder_error_zscore.png"
       }
     }
   },
@@ -226,9 +306,11 @@
           "mse_total": 3.7160072961741594e-07,
           "mae_total": 0.000828501230401466
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_error_minmax.png"
+        "norm_path": "outputs\\explosive\\explosive_normalized_minmax.obj",
+        "quant_int": "outputs\\explosive\\explosive_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\explosive\\explosive_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\explosive\\explosive_reconstructed_minmax.obj",
+        "plot": "outputs\\explosive\\explosive_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -254,9 +336,47 @@
           "mse_total": 1.1047864296072561e-06,
           "mae_total": 0.00157095832232958
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\explosive\\explosive_error_unitsphere.png"
+        "norm_path": "outputs\\explosive\\explosive_normalized_unitsphere.obj",
+        "quant_int": "outputs\\explosive\\explosive_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\explosive\\explosive_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\explosive\\explosive_reconstructed_unitsphere.obj",
+        "plot": "outputs\\explosive\\explosive_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            0.04264822273781913,
+            0.5208888917246713,
+            -9.094354215003811e-06
+          ],
+          "sigma": [
+            0.11742442416544392,
+            0.387970144780312,
+            0.0926960832965787
+          ],
+          "z_lo": -1.7591455846528044,
+          "z_hi": 1.6691330297007878
+        },
+        "errors": {
+          "mse_per_axis": [
+            7.515471500425051e-06,
+            5.559247390798938e-07,
+            2.0347541490912578e-05
+          ],
+          "mae_per_axis": [
+            0.00046778691262823,
+            0.0006167535186522309,
+            0.0008944624752124208
+          ],
+          "mse_total": 2.8418937730417698e-05,
+          "mae_total": 0.0019790029064928765
+        },
+        "norm_path": "outputs\\explosive\\explosive_normalized_zscore.obj",
+        "quant_int": "outputs\\explosive\\explosive_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\explosive\\explosive_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\explosive\\explosive_reconstructed_zscore.obj",
+        "plot": "outputs\\explosive\\explosive_error_zscore.png"
       }
     }
   },
@@ -313,9 +433,11 @@
           "mse_total": 4.68938000072103e-07,
           "mae_total": 0.0008169085314496123
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_error_minmax.png"
+        "norm_path": "outputs\\fence\\fence_normalized_minmax.obj",
+        "quant_int": "outputs\\fence\\fence_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\fence\\fence_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\fence\\fence_reconstructed_minmax.obj",
+        "plot": "outputs\\fence\\fence_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -341,9 +463,47 @@
           "mse_total": 1.4409600535526702e-06,
           "mae_total": 0.0018248199740448963
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\fence\\fence_error_unitsphere.png"
+        "norm_path": "outputs\\fence\\fence_normalized_unitsphere.obj",
+        "quant_int": "outputs\\fence\\fence_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\fence\\fence_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\fence\\fence_reconstructed_unitsphere.obj",
+        "plot": "outputs\\fence\\fence_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            -0.005803716981131987,
+            0.39659240880503194,
+            0.0
+          ],
+          "sigma": [
+            0.3500769416289038,
+            0.2515873273125019,
+            0.010706196407194965
+          ],
+          "z_lo": -2.101586702153078,
+          "z_hi": 2.101586702153078
+        },
+        "errors": {
+          "mse_per_axis": [
+            7.747748289111757e-07,
+            1.7769702000339994e-07,
+            8.214486281036487e-11
+          ],
+          "mae_per_axis": [
+            0.0007463147141992697,
+            0.0003380622320403051,
+            3.7348530957780762e-06
+          ],
+          "mse_total": 9.525539937773854e-07,
+          "mae_total": 0.0010881117993353528
+        },
+        "norm_path": "outputs\\fence\\fence_normalized_zscore.obj",
+        "quant_int": "outputs\\fence\\fence_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\fence\\fence_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\fence\\fence_reconstructed_zscore.obj",
+        "plot": "outputs\\fence\\fence_error_zscore.png"
       }
     }
   },
@@ -400,9 +560,11 @@
           "mse_total": 6.183914634621021e-07,
           "mae_total": 0.0011092293754345402
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_error_minmax.png"
+        "norm_path": "outputs\\girl\\girl_normalized_minmax.obj",
+        "quant_int": "outputs\\girl\\girl_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\girl\\girl_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\girl\\girl_reconstructed_minmax.obj",
+        "plot": "outputs\\girl\\girl_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -428,9 +590,47 @@
           "mse_total": 1.1349956828493095e-06,
           "mae_total": 0.0016021767648034407
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\girl\\girl_error_unitsphere.png"
+        "norm_path": "outputs\\girl\\girl_normalized_unitsphere.obj",
+        "quant_int": "outputs\\girl\\girl_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\girl\\girl_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\girl\\girl_reconstructed_unitsphere.obj",
+        "plot": "outputs\\girl\\girl_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            0.002644200311942898,
+            0.4294982283868098,
+            0.01746761029411767
+          ],
+          "sigma": [
+            0.1671270845056467,
+            0.22321575530216234,
+            0.06566085646338478
+          ],
+          "z_lo": -2.405491793871147,
+          "z_hi": 2.3016006468047556
+        },
+        "errors": {
+          "mse_per_axis": [
+            0.0002274951398266262,
+            3.6187675460545284e-07,
+            2.304873286855639e-06
+          ],
+          "mae_per_axis": [
+            0.003331697783665303,
+            0.0005226674381177637,
+            0.0002678788324447904
+          ],
+          "mse_total": 0.00023016188986808877,
+          "mae_total": 0.00412224405422786
+        },
+        "norm_path": "outputs\\girl\\girl_normalized_zscore.obj",
+        "quant_int": "outputs\\girl\\girl_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\girl\\girl_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\girl\\girl_reconstructed_zscore.obj",
+        "plot": "outputs\\girl\\girl_error_zscore.png"
       }
     }
   },
@@ -487,9 +687,11 @@
           "mse_total": 2.2882941118466277e-06,
           "mae_total": 0.0020333745773650543
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_error_minmax.png"
+        "norm_path": "outputs\\person\\person_normalized_minmax.obj",
+        "quant_int": "outputs\\person\\person_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\person\\person_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\person\\person_reconstructed_minmax.obj",
+        "plot": "outputs\\person\\person_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -515,9 +717,47 @@
           "mse_total": 5.081019735629944e-06,
           "mae_total": 0.003353560138421687
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\person\\person_error_unitsphere.png"
+        "norm_path": "outputs\\person\\person_normalized_unitsphere.obj",
+        "quant_int": "outputs\\person\\person_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\person\\person_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\person\\person_reconstructed_unitsphere.obj",
+        "plot": "outputs\\person\\person_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            -0.0019838887915936917,
+            1.1684853887915918,
+            -0.009341486865148869
+          ],
+          "sigma": [
+            0.3809627517728304,
+            0.5266655782105262,
+            0.10060075514432687
+          ],
+          "z_lo": -2.2149394930178805,
+          "z_hi": 2.132835520035589
+        },
+        "errors": {
+          "mse_per_axis": [
+            8.093441427541239e-06,
+            1.691740422835264e-06,
+            1.214152929473237e-07
+          ],
+          "mae_per_axis": [
+            0.0010432664467114393,
+            0.0011098366219973693,
+            0.00023056811448033976
+          ],
+          "mse_total": 9.906597143323954e-06,
+          "mae_total": 0.0023836711831891457
+        },
+        "norm_path": "outputs\\person\\person_normalized_zscore.obj",
+        "quant_int": "outputs\\person\\person_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\person\\person_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\person\\person_reconstructed_zscore.obj",
+        "plot": "outputs\\person\\person_error_zscore.png"
       }
     }
   },
@@ -574,9 +814,11 @@
           "mse_total": 4.4996870908922743e-07,
           "mae_total": 0.0009313366776026703
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_error_minmax.png"
+        "norm_path": "outputs\\table\\table_normalized_minmax.obj",
+        "quant_int": "outputs\\table\\table_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\table\\table_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\table\\table_reconstructed_minmax.obj",
+        "plot": "outputs\\table\\table_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -602,9 +844,47 @@
           "mse_total": 1.4869344003064262e-06,
           "mae_total": 0.001828906611326809
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\table\\table_error_unitsphere.png"
+        "norm_path": "outputs\\table\\table_normalized_unitsphere.obj",
+        "quant_int": "outputs\\table\\table_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\table\\table_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\table\\table_reconstructed_unitsphere.obj",
+        "plot": "outputs\\table\\table_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            -0.0048377855617261455,
+            0.38833545664246283,
+            -0.003936188381033726
+          ],
+          "sigma": [
+            0.1479504357600781,
+            0.18426468792493758,
+            0.3313235700163484
+          ],
+          "z_lo": -1.7996527732842067,
+          "z_hi": 1.4928222231718333
+        },
+        "errors": {
+          "mse_per_axis": [
+            5.614842222290851e-08,
+            5.7827697561707806e-05,
+            1.2955472839102064e-06
+          ],
+          "mae_per_axis": [
+            0.0001962771389795862,
+            0.0012912977946980886,
+            0.0006809677073245276
+          ],
+          "mse_total": 5.917939326784133e-05,
+          "mae_total": 0.002168542641002193
+        },
+        "norm_path": "outputs\\table\\table_normalized_zscore.obj",
+        "quant_int": "outputs\\table\\table_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\table\\table_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\table\\table_reconstructed_zscore.obj",
+        "plot": "outputs\\table\\table_error_zscore.png"
       }
     }
   },
@@ -661,9 +941,11 @@
           "mse_total": 3.884233467785291e-07,
           "mae_total": 0.0006806678617409349
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_normalized_minmax.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_reconstructed_minmax.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_error_minmax.png"
+        "norm_path": "outputs\\talwar\\talwar_normalized_minmax.obj",
+        "quant_int": "outputs\\talwar\\talwar_quantized_int_minmax.npy",
+        "quant_vis": "outputs\\talwar\\talwar_quantized_vis_minmax.obj",
+        "recon_path": "outputs\\talwar\\talwar_reconstructed_minmax.obj",
+        "plot": "outputs\\talwar\\talwar_error_minmax.png"
       },
       "unitsphere": {
         "params": {
@@ -689,9 +971,47 @@
           "mse_total": 1.8928843161694457e-06,
           "mae_total": 0.0020871462621792447
         },
-        "norm_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_normalized_unitsphere.obj",
-        "recon_path": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_reconstructed_unitsphere.obj",
-        "plot": "C:\\Users\\saket\\OneDrive\\Desktop\\mesh_preprocessing\\outputs\\talwar\\talwar_error_unitsphere.png"
+        "norm_path": "outputs\\talwar\\talwar_normalized_unitsphere.obj",
+        "quant_int": "outputs\\talwar\\talwar_quantized_int_unitsphere.npy",
+        "quant_vis": "outputs\\talwar\\talwar_quantized_vis_unitsphere.obj",
+        "recon_path": "outputs\\talwar\\talwar_reconstructed_unitsphere.obj",
+        "plot": "outputs\\talwar\\talwar_error_unitsphere.png"
+      },
+      "zscore": {
+        "params": {
+          "type": "zscore",
+          "mu": [
+            0.021873203252032486,
+            0.32418794918699106,
+            -0.004872883130081303
+          ],
+          "sigma": [
+            0.010548393747186339,
+            0.24173539940108701,
+            0.04776824955771874
+          ],
+          "z_lo": -3.6798885387063263,
+          "z_hi": 2.591904422626285
+        },
+        "errors": {
+          "mse_per_axis": [
+            2.2846461085553246e-06,
+            3.4956770584306734e-05,
+            3.166292540796346e-08
+          ],
+          "mae_per_axis": [
+            0.00025690749735470263,
+            0.0015852363096863266,
+            0.0001546206459237702
+          ],
+          "mse_total": 3.727307961827012e-05,
+          "mae_total": 0.0019967644529647983
+        },
+        "norm_path": "outputs\\talwar\\talwar_normalized_zscore.obj",
+        "quant_int": "outputs\\talwar\\talwar_quantized_int_zscore.npy",
+        "quant_vis": "outputs\\talwar\\talwar_quantized_vis_zscore.obj",
+        "recon_path": "outputs\\talwar\\talwar_reconstructed_zscore.obj",
+        "plot": "outputs\\talwar\\talwar_error_zscore.png"
       }
     }
   }
